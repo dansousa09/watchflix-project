@@ -9,7 +9,7 @@ const notMinimized = `width: 100%;
   align-items: center; 
 
   > h1 {
-    color: ${(props: any) => props.theme.colors.white};
+    color: #FF6961;
     font-size: 72px;
     margin: 0;
     padding: 0;
@@ -40,7 +40,7 @@ const minimized = `width: 100%;
   align-items: center; 
 
   > h1 {
-    color: ${(props: any) => props.theme.colors.white};
+    color: #FF6961;
     font-size: 32px;
     margin: 0;
     padding-right: 30px;
@@ -60,4 +60,23 @@ const minimized = `width: 100%;
 
 export const Container = styled.div<{ minHeader: boolean }>`
   ${(props) => (props.minHeader ? minimized : notMinimized)}
+`;
+
+export const ToggleThemeIcon = styled.div`
+  position: absolute;
+  top: 24px;
+  right: 32px;
+  background: ${(props) => props.theme.colors.tertiary};
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  @media (max-width: 720px) {
+    position: absolute;
+    top: 8px;
+    right: 12px;
+  } ;
 `;

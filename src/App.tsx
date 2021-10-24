@@ -4,12 +4,19 @@ import { WatchItems, WatchItem } from "./interfaces/WatchItem";
 import WatchSection from "./components/WatchSection";
 import MainWatch from "./components/MainWatch";
 import Header from "./components/Header";
+import { ThemeProvider } from "styled-components";
+import light from "./styles/theme/light";
+import dark from "./styles/theme/dark";
+import { useTheme } from "./contexts/ThemeContext";
+import GlobalStyle from "./styles/global";
 
 function App() {
   const [watchList, setWatchList] = useState<WatchItems[]>([]);
   const [mainWatchData, setMainWatchData] = useState<WatchItem | null>();
 
   const [minHeader, setMinHeader] = useState(false);
+
+  const { state, dispatch } = useTheme();
 
   useEffect(() => {
     //Fetching the watch list from TMDBApi;
@@ -38,13 +45,14 @@ function App() {
   }, []);
 
   return (
-    <>
+    <ThemeProvider theme={state.theme === "light" ? light : dark}>
+      <GlobalStyle />
       <Header minHeader={minHeader} />
       {mainWatchData && <MainWatch item={mainWatchData} />}
       {watchList.map((item, index) => (
         <WatchSection key={index} title={item.title} items={item.items} />
       ))}
-    </>
+    </ThemeProvider>
   );
 }
 
