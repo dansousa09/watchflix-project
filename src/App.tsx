@@ -1,25 +1,50 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import { useEffect, useState } from "react";
+import tmdb from "./api/tmdb";
+import { WatchItems, WatchItem } from "./interfaces/WatchItem";
+import WatchSection from "./components/WatchSection";
+import MainWatch from "./components/MainWatch";
+import Header from "./components/Header";
 
 function App() {
+  const [watchList, setWatchList] = useState<WatchItems[]>([]);
+  const [mainWatchData, setMainWatchData] = useState<WatchItem | null>();
+
+  const [minHeader, setMinHeader] = useState(false);
+
+  useEffect(() => {
+    //Fetching the watch list from TMDBApi;
+    const getFullWatchList = async () => {
+      let list = await tmdb.watchList();
+      setWatchList(list);
+
+      let mainFilm = list.filter((i) => i.slug === "trending");
+      let random = Math.floor(
+        Math.random() * (mainFilm[0].items.results.length - 1)
+      );
+      let gotRandom = mainFilm[0].items.results[random];
+      setMainWatchData(gotRandom);
+    };
+    getFullWatchList();
+  }, []);
+
+  useEffect(() => {
+    const scrollViewer = () => {
+      window.scrollY > 50 ? setMinHeader(true) : setMinHeader(false);
+    };
+    window.addEventListener("scroll", scrollViewer);
+    return () => {
+      window.removeEventListener("scroll", scrollViewer);
+    };
+  }, []);
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <>
+      <Header minHeader={minHeader} />
+      {mainWatchData && <MainWatch item={mainWatchData} />}
+      {watchList.map((item, index) => (
+        <WatchSection key={index} title={item.title} items={item.items} />
+      ))}
+    </>
   );
 }
 
